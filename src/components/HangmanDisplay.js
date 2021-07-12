@@ -1,5 +1,5 @@
 import React from 'react';
-import hangman from './hangman2-miss6.png';
+import hangman from '../images/hangman2.png';
 
 const HangmanDisplay = () => {
     return (

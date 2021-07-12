@@ -8,19 +8,41 @@ import LetterPicker from '../components/LetterPicker';
 // import AddRobot from '../components/AddRobot';
 import './App.css';
 
+const easyWords = ["dog","art","bird","pig","paw","pint","poor","pain","fire","well"];
+const hardWords = ["needle","diaper","pencil","doctor","paint","laptop","paper","liver","brain","table"];
+let misses = 0;
+
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            lastLetterClicked: ''
+            lastLetterClicked: '',
+            answer: 'fire', 
+            numMisses: 0,
+            missesLeft: 6,
+            turnNum: 0,
+            correctPicks: []
         }
     }
 
     onLetterClick = (letter) => {
-        this.setState({lastLetterClicked: letter}, () => {
-            console.log(this.state.lastLetterClicked);
-        });
-        
+        const { answer } = this.state;
+        let { numMisses, missesLeft, turnNum, correctPicks } = this.state;
+
+        this.setState({lastLetterClicked: letter});
+
+        if( answer.includes(letter.toLowerCase()) ) {
+            //console.log('includes', letter);
+            this.setState({correctPicks: [...correctPicks, ...letter.toLowerCase()] })
+
+        } else {
+            misses += 1;
+            this.setState({numMisses: misses});
+            this.setState({missesLeft: missesLeft - 1});
+        }
+        // is it ok to update this directly? or should make another variable?
+        this.setState({turnNum: turnNum + 1})
+        console.log(correctPicks[0]);
     }
 
     render() {
@@ -45,8 +67,16 @@ class App extends Component {
                 <GameTitle />
                 <HangmanDisplay />
                 <DifficultySelector />
-                <GameProgress />
-                <LetterPicker onLetterClick={this.onLetterClick} />
+                <GameProgress 
+                    answer={this.state.answer}
+                    lastLetterClicked={this.state.lastLetterClicked}
+                    missesLeft={this.state.missesLeft}
+                    turnNum={this.state.turnNum}
+                    correctPicks={this.state.correctPicks}
+                />
+                <LetterPicker 
+                    onLetterClick={this.onLetterClick} 
+                />
             </div>
         );    
                             
