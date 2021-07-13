@@ -8,7 +8,7 @@ import './App.css';
 
 const easyWords = ["dog","art","bird","pig","paw","pint","poor","pain","fire","well"];
 const hardWords = ["needle","diaper","pencil","doctor","paint","laptop","paper","liver","brain","table"];
-let misses = 0;
+//let misses = 0;
 const answer = 'fire';
 const keyboard = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']; 
 
@@ -17,8 +17,8 @@ class App extends Component {
         super(props);
         this.state = {
             lastLetterClicked: '',      
-            numMisses: 0,               
-            turnNum: 0,         // change to bool firstTurn or gameStart or something?
+            //numMisses: 0,               
+            turnNum: 0,         // dont need this. If correctPics && incorrectPicks are 0, then turnNum =0
             correctPicks: [],
             incorrectPicks: []        
         }      
@@ -33,8 +33,8 @@ class App extends Component {
             this.setState({correctPicks: [...correctPicks, ...letter.toLowerCase()] })
 
         } else {
-            misses += 1;
-            this.setState({numMisses: misses});
+            //misses += 1;
+            //this.setState({numMisses: misses});
             this.setState({incorrectPicks: [...incorrectPicks, ...letter] })
         }
         this.setState({turnNum: turnNum + 1})
@@ -45,12 +45,11 @@ class App extends Component {
         return (
             <div>
                 <GameTitle />
-                <HangmanDisplay />
+                <HangmanDisplay incorrectPicks={this.state.incorrectPicks} />
                 <DifficultySelector />
                 <GameProgress 
                     answer={answer}
                     lastLetterClicked={this.state.lastLetterClicked}
-                    numMisses={this.state.numMisses}
                     turnNum={this.state.turnNum}
                     correctPicks={this.state.correctPicks}
                     incorrectPicks={this.state.incorrectPicks}
