@@ -1,8 +1,6 @@
 import React from 'react';
 
 const letterClicked = (e) => {
-    console.log(e.target.id);
-    //onLetterClick('A')
     e.target.disabled = 'true';
 }
 
