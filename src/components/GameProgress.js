@@ -1,8 +1,8 @@
 import React from 'react';
 
-var wordOutput = [];
-
 let fillSpaces = (answer, turnNum, correctPicks) => {
+    let wordOutput = [];
+
     if (turnNum === 0) {
         for (let i in answer) {
             wordOutput[i] = "__  ";
@@ -18,17 +18,20 @@ let fillSpaces = (answer, turnNum, correctPicks) => {
             }
         }
     }
+    
     return wordOutput.join("  ");
 }
 
-//blankSpaces to initialize, fillInBlanks on click???
+let displayMisses = (incorrectPicks) => {
+    return incorrectPicks.join(" ");
+}
 
-const GameProgress = ({ answer, lastLetterClicked, missesLeft, turnNum, correctPicks }) => {
+const GameProgress = ({ answer, lastLetterClicked, missesLeft, turnNum, correctPicks, incorrectPicks }) => {
     return (
         <div id='game-progress'>
             <p id='word'>Word:  {fillSpaces(answer, turnNum, correctPicks)}</p><br/>
             <p id='guess'>Guess: {lastLetterClicked}</p><br/>
-            <p id='miss'>Misses: ({missesLeft} left)</p><br/>
+            <p id='miss'>Misses: {displayMisses(incorrectPicks)}({missesLeft} left)</p><br/>
         </div>
     );
 }

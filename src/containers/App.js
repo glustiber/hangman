@@ -21,13 +21,15 @@ class App extends Component {
             numMisses: 0,
             missesLeft: 6,
             turnNum: 0,
-            correctPicks: []
+            correctPicks: [],
+            incorrectPicks: [],
+            keyboard: ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
         }
     }
 
     onLetterClick = (letter) => {
         const { answer } = this.state;
-        let { numMisses, missesLeft, turnNum, correctPicks } = this.state;
+        let { numMisses, missesLeft, turnNum, correctPicks, incorrectPicks } = this.state;
 
         this.setState({lastLetterClicked: letter});
 
@@ -39,10 +41,11 @@ class App extends Component {
             misses += 1;
             this.setState({numMisses: misses});
             this.setState({missesLeft: missesLeft - 1});
+            this.setState({incorrectPicks: [...incorrectPicks, ...letter] })
         }
-        // is it ok to update this directly? or should make another variable?
+
         this.setState({turnNum: turnNum + 1})
-        console.log(correctPicks[0]);
+        console.log('letter id', letter);
     }
 
     render() {
@@ -73,9 +76,11 @@ class App extends Component {
                     missesLeft={this.state.missesLeft}
                     turnNum={this.state.turnNum}
                     correctPicks={this.state.correctPicks}
+                    incorrectPicks={this.state.incorrectPicks}
                 />
                 <LetterPicker 
                     onLetterClick={this.onLetterClick} 
+                    keyboard={this.state.keyboard}
                 />
             </div>
         );    
