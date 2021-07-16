@@ -1,10 +1,10 @@
 import React from 'react';
 
-const letterClicked = (e) => {
-    e.target.disabled = 'true';
-}
-
-const Key = ({ id, onLetterClick }) => {
+const Letter = ({ id, onLetterClick }) => {
+    const letterClicked = (e) => {
+        e.target.disabled = 'true';
+    }
+    
     return (
         <button 
             id={id} 
@@ -17,4 +17,4 @@ const Key = ({ id, onLetterClick }) => {
     );
 }
 
-export default Key;
+export default Letter;

@@ -1,54 +1,43 @@
 import React, {Component} from 'react';
-import GameTitle from '../components/GameTitle';
-import HangmanDisplay from '../components/HangmanDisplay';
+import GameStart from '../components/GameStart';
 import GameBoard from '../components/GameBoard';
+import GameEnd from '../components/GameEnd';
 import './App.css';
 
+// MOVE INSIDE COMPONENT
 const easyWords = ["dog","art","bird","pig","paw","pint","poor","pain","fire","well"];
 const mediumWords = ["needle","diaper","pencil","doctor","paint","laptop","paper","liver","brain","table"];
-const hardWords = ["fizzled","grizzly","jacuzzi","biscuit","jacuzzi","pancake","blizzard","bathroom","birthday","attorney"];
-const keyboard = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']; 
+const hardWords = ["fizzled","grizzly","jacuzzi","biscuit","jacuzzi","pancake","blizzard","bathroom","birthday","attorney"]; 
+//const answer = 'fire';
 
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            lastLetterClicked: '',
-            correctPicks: [],
+            lettersPicked: [],
             incorrectPicks: [],
-            //newGame: true,
-            answer: '',
+            correctPicks: [],
+            lastLetterPicked: '',
             difficulty: '',
-            gameState: 'welcome',
-            gameResult: ''       
+            answer: '',       
         }      
     }
-
+    
     onLetterClick = (letter) => {
-        let { answer, correctPicks, incorrectPicks } = this.state;
+        let {answer, correctPicks, incorrectPicks} = this.state;
 
-        //this.setState({newGame: false});
         this.setState({lastLetterClicked: letter});
 
-        if( answer.includes(letter.toLowerCase()) ) {
-            this.setState({correctPicks: [...correctPicks, ...letter.toLowerCase()] })
-
+        this.setState(prevState => ({
+            lettersPicked: [...prevState.lettersPicked, letter]
+        }))
+        
+        if( answer.includes(letter.toLowerCase())) {
+            //this.setState({correctPicks: [...correctPicks, ...letter.toLowerCase()]})
+            this.addCorrectPick(correctPicks, letter);
         } else {
-            this.setState({incorrectPicks: [...incorrectPicks, ...letter] })
-        }
-
-        // if incorrectPicks.length === 6 GAME OVER
-        // if correctPicks - checkForWinner function that compares arrays
-        // if( this.checkForWinner() || this.checkForLoser() ) {
-        //     this.setState({gameState: 'end'});
-        // }
-        if(this.checkForWinner()) {
-            this.setState({gameResult: 'win'});
-            this.setState({gameState: 'end'});
-        }
-        if(this.checkForLoser()) {
-            this.setState({gameResult: 'loss'});
-            this.setState({gameState: 'end'});
+            //this.setState({incorrectPicks: [...incorrectPicks, ...letter] })
+            this.addIncorrectPick(incorrectPicks, letter);
         }
     }
 
@@ -65,14 +54,25 @@ class App extends Component {
     checkForWinner = () => {
         let {answer, correctPicks} = this.state;
         let answerArray = answer.split('');
-        //console.log(answerArray);
         
         if(answerArray.every(i => correctPicks.includes(i))) {
-            this.setState({gameResult: 'win'});
+            //this.setState({gameResult: 'win'});
             return true;
         } else {
             return false;
         }
+    }
+
+    addCorrectPick = (correctPicks, letter) => {
+        this.setState(prevState => ({
+            correctPicks: [...prevState.correctPicks, letter]
+        }))
+    }
+
+    addIncorrectPick = (incorrectPicks, letter) => {
+        this.setState(prevState => ({
+            incorrectPicks: [...prevState.incorrectPicks, letter]
+        }))
     }
 
     onDifficultySelect = (e) => {
@@ -83,7 +83,10 @@ class App extends Component {
     onNewGameClick = () => {
         //this.setState({newGame: true});
         this.setState({answer: this.getRandomWord() });
-        this.setState({gameState: 'inProgress'});
+        this.setState({lastLetterClicked: ''});
+        this.setState({lettersPicked: []});
+        this.setState({correctPicks: []});
+        this.setState({incorrectPicks: []});
     }
 
     getRandomWord = () => {
@@ -101,25 +104,45 @@ class App extends Component {
     }
 
     render() {
-        return (
-            <div>
-                <GameTitle />
-                <HangmanDisplay incorrectPicks={this.state.incorrectPicks} />
+        let {answer} = this.state;
+
+        if (this.state.lettersPicked.length === 0 && answer.length === 0) {
+            return (
+                <GameStart 
+                    onDifficultySelect={this.onDifficultySelect} 
+                    onNewGameClick={this.onNewGameClick} 
+                />
+            );
+        }
+        else if (this.checkForWinner()) {
+            return (
+                <GameEnd 
+                    result="win" 
+                    answer={answer}
+                    onDifficultySelect={this.onDifficultySelect}
+                    onNewGameClick={this.onNewGameClick}    
+                />
+            );
+        } else if (this.checkForLoser()) {
+            return (
+                <GameEnd 
+                    result="lose" 
+                    answer={answer}
+                    onDifficultySelect={this.onDifficultySelect}
+                    onNewGameClick={this.onNewGameClick}  
+                />
+            );
+        } else {
+            return (
                 <GameBoard 
-                    gameState={this.state.gameState} 
-                    answer={this.state.answer}
-                    lastLetterClicked={this.state.lastLetterClicked}
+                    answer={answer}
+                    lastLetterPicked={this.state.lastLetterPicked}
                     correctPicks={this.state.correctPicks}
                     incorrectPicks={this.state.incorrectPicks}
-                    onLetterClick={this.onLetterClick} 
-                    keyboard={keyboard}
-                    onNewGameClick={this.onNewGameClick} 
-                    onDifficultySelect={this.onDifficultySelect}
-                    gameResult={this.gameResult}
+                    onLetterClick={this.onLetterClick}
                 />
-            </div>
-        );    
-                            
+            ); 
+        }                    
     }
 }
 
