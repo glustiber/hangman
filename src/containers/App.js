@@ -4,11 +4,9 @@ import GameBoard from '../components/GameBoard';
 import GameEnd from '../components/GameEnd';
 import './App.css';
 
-// MOVE INSIDE COMPONENT
 const easyWords = ["dog","art","bird","pig","paw","pint","poor","pain","fire","well"];
 const mediumWords = ["needle","diaper","pencil","doctor","paint","laptop","paper","liver","brain","table"];
 const hardWords = ["fizzled","grizzly","jacuzzi","biscuit","jacuzzi","pancake","blizzard","bathroom","birthday","attorney"]; 
-//const answer = 'fire';
 
 class App extends Component {
     constructor(props) {
@@ -79,10 +77,9 @@ class App extends Component {
         this.setState({difficulty: e.target.value});
     }
 
-    // this should reset everything.. clear arrays, last click, etc
     onNewGameClick = () => {
-        //this.setState({newGame: true});
         this.setState({answer: this.getRandomWord() });
+        //this.setState({difficulty: ''});
         this.setState({lastLetterClicked: ''});
         this.setState({lettersPicked: []});
         this.setState({correctPicks: []});
@@ -140,6 +137,9 @@ class App extends Component {
                     correctPicks={this.state.correctPicks}
                     incorrectPicks={this.state.incorrectPicks}
                     onLetterClick={this.onLetterClick}
+                    onDifficultySelect={this.onDifficultySelect}
+                    onNewGameClick={this.onNewGameClick}
+                    difficulty={this.difficulty}
                 />
             ); 
         }                    
