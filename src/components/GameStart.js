@@ -2,7 +2,7 @@ import React from 'react';
 import GameTitle from './GameTitle';
 import DifficultySelector from './DifficultySelector';
 
-const GameStart = ({onDifficultySelect, onNewGameClick}) => {
+const GameStart = ({onDifficultySelect, onNewGameClick, difficulty}) => {
     return (
         <div>
             <GameTitle />
@@ -10,6 +10,7 @@ const GameStart = ({onDifficultySelect, onNewGameClick}) => {
             <DifficultySelector 
                 onDifficultySelect={onDifficultySelect}
                 onNewGameClick={onNewGameClick}
+                difficulty={difficulty}
             />
         </div>
     );

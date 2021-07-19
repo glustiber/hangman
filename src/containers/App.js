@@ -4,70 +4,49 @@ import GameBoard from '../components/GameBoard';
 import GameEnd from '../components/GameEnd';
 import './App.css';
 
-const easyWords = ["dog","art","bird","pig","paw","pint","poor","pain","fire","well"];
-const mediumWords = ["needle","diaper","pencil","doctor","paint","laptop","paper","liver","brain","table"];
-const hardWords = ["fizzled","grizzly","jacuzzi","biscuit","jacuzzi","pancake","blizzard","bathroom","birthday","attorney"]; 
+const words = {
+    easy: ["dog","art","bird","pig","paw","pint","poor","pain","fire","well"],
+    medium: ["needle","diaper","pencil","doctor","paint","laptop","paper","liver","brain","table"],
+    hard: ["fizzled","grizzly","jacuzzi","biscuit","jacuzzi","pancake","blizzard","bathroom","birthday","attorney"]
+}
 
+// Make it so cant have same answer twice in a row?
+// Clean up render method?
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            lettersPicked: [],
             incorrectPicks: [],
             correctPicks: [],
             lastLetterPicked: '',
-            difficulty: '',
+            difficulty: 'easy',
             answer: '',       
         }      
     }
     
     onLetterClick = (letter) => {
-        let {answer, correctPicks, incorrectPicks} = this.state;
+        let {answer} = this.state;
 
         this.setState({lastLetterClicked: letter});
-
-        this.setState(prevState => ({
-            lettersPicked: [...prevState.lettersPicked, letter]
-        }))
         
-        if( answer.includes(letter.toLowerCase())) {
-            //this.setState({correctPicks: [...correctPicks, ...letter.toLowerCase()]})
-            this.addCorrectPick(correctPicks, letter);
-        } else {
-            //this.setState({incorrectPicks: [...incorrectPicks, ...letter] })
-            this.addIncorrectPick(incorrectPicks, letter);
-        }
+        answer.includes(letter.toLowerCase()) ? this.addCorrectPick(letter) : this.addIncorrectPick(letter);
     }
 
-    checkForLoser = () => {
-        let {incorrectPicks} = this.state;
-        if(incorrectPicks.length >= 6) {
-            //this.setState({gameResult: 'loss'});
-            return true;
-        } else {
-            return false;
-        }
-    }
+    checkForLoser = () => this.state.incorrectPicks.length >= 6 ? true : false;
 
     checkForWinner = () => {
         let {answer, correctPicks} = this.state;
         let answerArray = answer.split('');
-        
-        if(answerArray.every(i => correctPicks.includes(i))) {
-            //this.setState({gameResult: 'win'});
-            return true;
-        } else {
-            return false;
-        }
+        return answerArray.every(i => correctPicks.includes(i)) ? true : false;
     }
 
-    addCorrectPick = (correctPicks, letter) => {
+    addCorrectPick = (letter) => {
         this.setState(prevState => ({
             correctPicks: [...prevState.correctPicks, letter]
         }))
     }
 
-    addIncorrectPick = (incorrectPicks, letter) => {
+    addIncorrectPick = (letter) => {
         this.setState(prevState => ({
             incorrectPicks: [...prevState.incorrectPicks, letter]
         }))
@@ -79,35 +58,26 @@ class App extends Component {
 
     onNewGameClick = () => {
         this.setState({answer: this.getRandomWord() });
-        //this.setState({difficulty: ''});
         this.setState({lastLetterClicked: ''});
-        this.setState({lettersPicked: []});
         this.setState({correctPicks: []});
         this.setState({incorrectPicks: []});
     }
 
     getRandomWord = () => {
-        let {difficulty} = this.state;
-        switch (difficulty) {
-            case 'hard':
-                return hardWords[Math.floor(Math.random() * hardWords.length)];
-                break;
-            case 'medium':
-                return mediumWords[Math.floor(Math.random() * mediumWords.length)];
-                break;
-            default:
-                return easyWords[Math.floor(Math.random() * easyWords.length)];
-        }
+        let wordsArray = words[this.state.difficulty];
+        return wordsArray[Math.floor(Math.random() * wordsArray.length)];
     }
 
     render() {
-        let {answer} = this.state;
+        let {answer, correctPicks, incorrectPicks} = this.state;
+        let lettersPicked = correctPicks.concat(incorrectPicks);
 
-        if (this.state.lettersPicked.length === 0 && answer.length === 0) {
+        if (lettersPicked.length === 0 && answer.length === 0) {
             return (
                 <GameStart 
                     onDifficultySelect={this.onDifficultySelect} 
                     onNewGameClick={this.onNewGameClick} 
+                    difficulty={this.state.difficulty}
                 />
             );
         }
@@ -117,7 +87,8 @@ class App extends Component {
                     result="win" 
                     answer={answer}
                     onDifficultySelect={this.onDifficultySelect}
-                    onNewGameClick={this.onNewGameClick}    
+                    onNewGameClick={this.onNewGameClick} 
+                    difficulty={this.state.difficulty}   
                 />
             );
         } else if (this.checkForLoser()) {
@@ -127,6 +98,7 @@ class App extends Component {
                     answer={answer}
                     onDifficultySelect={this.onDifficultySelect}
                     onNewGameClick={this.onNewGameClick}  
+                    difficulty={this.state.difficulty}
                 />
             );
         } else {
@@ -139,7 +111,7 @@ class App extends Component {
                     onLetterClick={this.onLetterClick}
                     onDifficultySelect={this.onDifficultySelect}
                     onNewGameClick={this.onNewGameClick}
-                    difficulty={this.difficulty}
+                    difficulty={this.state.difficulty}
                 />
             ); 
         }                    

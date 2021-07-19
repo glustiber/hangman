@@ -1,7 +1,7 @@
 import React from 'react';
 import DifficultySelector from './DifficultySelector';
 
-const GameEnd = ({result, answer, onDifficultySelect, onNewGameClick}) => {
+const GameEnd = ({result, answer, onDifficultySelect, onNewGameClick, difficulty}) => {
     return (
         <div>
             <h1>GAME OVER!!!</h1>
@@ -10,6 +10,7 @@ const GameEnd = ({result, answer, onDifficultySelect, onNewGameClick}) => {
             <DifficultySelector 
                 onDifficultySelect={onDifficultySelect}
                 onNewGameClick={onNewGameClick}
+                difficulty={difficulty}
             />
         </div>
     );
